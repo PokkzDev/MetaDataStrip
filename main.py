@@ -96,17 +96,22 @@ class MetadataStripperApp:
         self.button_frame = ttk.Frame(self.root, padding="10 10 10 10")
         self.button_frame.grid(row=2, column=0, pady=10, sticky=(tk.E, tk.S))
 
+        remove_all_button = ttk.Button(self.button_frame, text="Remove All Images", command=self.remove_all_images)
+        remove_all_button.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+
         add_images_button = ttk.Button(self.button_frame, text="Add Images", command=self.add_images)
-        add_images_button.grid(row=0, column=0, padx=5, pady=5, sticky=tk.E)
+        add_images_button.grid(row=0, column=1, padx=5, pady=5, sticky=tk.E)
 
         add_folder_button = ttk.Button(self.button_frame, text="Add Folder", command=self.add_folder)
-        add_folder_button.grid(row=0, column=1, padx=5, pady=5, sticky=tk.E)
+        add_folder_button.grid(row=0, column=2, padx=5, pady=5, sticky=tk.E)
 
         remove_button = ttk.Button(self.button_frame, text="Remove Metadata", command=self.remove_metadata_from_selected_images)
-        remove_button.grid(row=0, column=2, padx=5, pady=5, sticky=tk.E)
+        remove_button.grid(row=0, column=3, padx=5, pady=5, sticky=tk.E)
 
-        remove_all_button = ttk.Button(self.button_frame, text="Remove All Images", command=self.remove_all_images)
-        remove_all_button.grid(row=0, column=3, padx=5, pady=5, sticky=tk.E)
+        self.button_frame.grid_columnconfigure(0, weight=1)
+        self.button_frame.grid_columnconfigure(1, weight=0)
+        self.button_frame.grid_columnconfigure(2, weight=0)
+        self.button_frame.grid_columnconfigure(3, weight=0)
 
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
