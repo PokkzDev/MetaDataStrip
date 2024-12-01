@@ -1,4 +1,3 @@
-
 from PIL import Image
 from PIL.ExifTags import TAGS
 import os
@@ -44,3 +43,33 @@ class ImageProcessor:
         
         metadata_text = "\n".join([f"{key}: {value}" for key, value in sorted(metadata.items())])
         return metadata_text if metadata_text else "No metadata found."
+
+    @staticmethod
+    def has_metadata(image_path):
+        image = Image.open(image_path)
+        metadata_present = False
+        
+        # Check EXIF data
+        try:
+            exif_data = image._getexif()
+            if exif_data:
+                metadata_present = True
+        except Exception:
+            pass
+        
+        # Check other metadata based on image format
+        if image.format == 'PNG':
+            if image.info:
+                metadata_present = True
+        elif image.format in ['GIF', 'BMP']:
+            if image.info:
+                metadata_present = True
+        elif image.format in ['WEBP', 'HEIC']:
+            if image.info:
+                metadata_present = True
+        
+        # Additional check for any metadata in image.info
+        if image.info:
+            metadata_present = True
+        
+        return metadata_present
