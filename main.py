@@ -7,8 +7,101 @@ from image_processor import ImageProcessor  # Import ImageProcessor
 class MetadataStripperApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Metadata Stripper")
+        self.root.title("MetaStripper")
         self.file_paths = []
+        self.language = 'en'  # Default language
+
+        # Text for both languages
+        self.texts = {
+            'en': {
+                'title': "MetaStripper",
+                'preferences': "Preferences",
+                'exit': "Exit",
+                'resolution': "Resolution",
+                'help': "Help",
+                'about': "About",
+                'filename': "Filename",
+                'has_metadata': "Has Metadata",
+                'options': "Options",
+                'add_images': "Add Images",
+                'add_folder': "Add Folder",
+                'remove_metadata': "Remove Metadata",
+                'remove_all_images': "Remove All Images",
+                'success': "Success",
+                'metadata_removed': "Metadata removed from selected images.",
+                'error': "Error",
+                'no_images_selected': "No images selected.",
+                'no_images_to_remove': "No images to remove.",
+                'about_text': (
+                    "MetaStripper\n"
+                    "Version 1.0\n\n"
+                    "Developed by Pokkz.dev\n"
+                    "Fullstack Web Developer\n"
+                    "2024\n\n"
+                    "For more information, visit:\n"
+                    "https://pokkz.dev"
+                ),
+                'preferences_text': (
+                    "Preferences:\n\n"
+                    "1. Default Save Location: Same as original image\n"
+                    "2. Image Quality: High\n"
+                    "3. Metadata Removal: Complete\n\n"
+                    "These preferences can be customized in future versions."
+                ),
+                'help_text': (
+                    "How to Use MetaStripper:\n\n"
+                    "1. Click 'Add Images' to choose the images you want to process.\n"
+                    "2. Review the metadata displayed in the table.\n"
+                    "3. Click 'Remove Metadata' to strip metadata from the selected images.\n"
+                    "4. The processed images will be saved in the same directory.\n\n"
+                    "For more information, visit: https://pokkz.dev"
+                )
+            },
+            'es': {
+                'title': "MetaStripper",
+                'preferences': "Preferencias",
+                'exit': "Salir",
+                'resolution': "Resolución",
+                'help': "Ayuda",
+                'about': "Acerca de",
+                'filename': "Nombre de Archivo",
+                'has_metadata': "Tiene Metadatos",
+                'options': "Opciones",
+                'add_images': "Agregar Imágenes",
+                'add_folder': "Agregar Carpeta",
+                'remove_metadata': "Eliminar Metadatos",
+                'remove_all_images': "Eliminar Todas las Imágenes",
+                'success': "Éxito",
+                'metadata_removed': "Metadatos eliminados de las imágenes seleccionadas.",
+                'error': "Error",
+                'no_images_selected': "No se seleccionaron imágenes.",
+                'no_images_to_remove': "No hay imágenes para eliminar.",
+                'about_text': (
+                    "MetaStripper\n"
+                    "Versión 1.0\n\n"
+                    "Desarrollado por Pokkz.dev\n"
+                    "Desarrollador Web Fullstack\n"
+                    "2024\n\n"
+                    "Para más información, visite:\n"
+                    "https://pokkz.dev"
+                ),
+                'preferences_text': (
+                    "Preferencias:\n\n"
+                    "1. Ubicación de Guardado Predeterminada: Igual que la imagen original\n"
+                    "2. Calidad de Imagen: Alta\n"
+                    "3. Eliminación de Metadatos: Completa\n\n"
+                    "Estas preferencias se pueden personalizar en futuras versiones."
+                ),
+                'help_text': (
+                    "Cómo Usar MetaStripper:\n\n"
+                    "1. Haga clic en 'Agregar Imágenes' para elegir las imágenes que desea procesar.\n"
+                    "2. Revise los metadatos mostrados en la tabla.\n"
+                    "3. Haga clic en 'Eliminar Metadatos' para eliminar los metadatos de las imágenes seleccionadas.\n"
+                    "4. Las imágenes procesadas se guardarán en el mismo directorio.\n\n"
+                    "Para más información, visite: https://pokkz.dev"
+                )
+            }
+        }
 
         # Apply custom styles
         style = ttk.Style()
@@ -32,34 +125,46 @@ class MetadataStripperApp:
         self.root.config(menu=menu_bar)
 
         app_menu = tk.Menu(menu_bar, tearoff=0, bg='#34495e', fg='white')
-        menu_bar.add_cascade(label="App", menu=app_menu)
-        app_menu.add_command(label="Preferences", command=self.show_preferences)
+        menu_bar.add_cascade(label=self.texts[self.language]['preferences'], menu=app_menu)
+        app_menu.add_command(label=self.texts[self.language]['preferences'], command=self.show_preferences)
         app_menu.add_separator()
-        app_menu.add_command(label="Exit", command=self.close_app)
+        app_menu.add_command(label=self.texts[self.language]['exit'], command=self.close_app)
 
         resolution_menu = tk.Menu(menu_bar, tearoff=0, bg='#34495e', fg='white')
-        menu_bar.add_cascade(label="Resolution", menu=resolution_menu)
+        menu_bar.add_cascade(label=self.texts[self.language]['resolution'], menu=resolution_menu)
         resolutions = ["1024x576", "1280x720", "1920x1080"]
         for res in resolutions:
             resolution_menu.add_command(label=res, command=lambda r=res: self.set_resolution(r))
 
         help_menu = tk.Menu(menu_bar, tearoff=0, bg='#34495e', fg='white')
-        menu_bar.add_cascade(label="Help", menu=help_menu)
-        help_menu.add_command(label="Help", command=self.show_help)
-        help_menu.add_command(label="About", command=self.show_about)
+        menu_bar.add_cascade(label=self.texts[self.language]['help'], menu=help_menu)
+        help_menu.add_command(label=self.texts[self.language]['help'], command=self.show_help)
+        help_menu.add_command(label=self.texts[self.language]['about'], command=self.show_about)
+
+        language_menu = tk.Menu(menu_bar, tearoff=0, bg='#34495e', fg='white')
+        menu_bar.add_cascade(label="Language", menu=language_menu)
+        language_menu.add_command(label="English", command=lambda: self.set_language('en'))
+        language_menu.add_command(label="Español", command=lambda: self.set_language('es'))
+
+    def set_language(self, language):
+        self.language = language
+        self.root.title(self.texts[self.language]['title'])
+        self.create_menu()
+        self.create_widgets()  # Update widgets to reflect the new language
+        self.refresh_metadata_display()
 
     def create_widgets(self):
         self.metadata_frame = ttk.Frame(self.root, padding="10 10 10 10")
         self.metadata_frame.grid(row=0, column=0, padx=10, pady=10, sticky=(tk.W, tk.E, tk.N, tk.S))
 
         # Add titles
-        ttk.Label(self.metadata_frame, text="Filename", font=('Helvetica', 10, 'bold')).grid(
+        ttk.Label(self.metadata_frame, text=self.texts[self.language]['filename'], font=('Helvetica', 10, 'bold')).grid(
             row=0, column=0, padx=5, pady=5, sticky="w"
         )
-        ttk.Label(self.metadata_frame, text="Has Metadata", font=('Helvetica', 10, 'bold')).grid(
+        ttk.Label(self.metadata_frame, text=self.texts[self.language]['has_metadata'], font=('Helvetica', 10, 'bold')).grid(
             row=0, column=1, padx=5, pady=5, sticky="w"
         )
-        ttk.Label(self.metadata_frame, text="Options", font=('Helvetica', 10, 'bold')).grid(
+        ttk.Label(self.metadata_frame, text=self.texts[self.language]['options'], font=('Helvetica', 10, 'bold')).grid(
             row=0, column=2, padx=5, pady=5, sticky="w"
         )
 
@@ -96,16 +201,16 @@ class MetadataStripperApp:
         self.button_frame = ttk.Frame(self.root, padding="10 10 10 10")
         self.button_frame.grid(row=2, column=0, pady=10, sticky=(tk.E, tk.S))
 
-        remove_all_button = ttk.Button(self.button_frame, text="Remove All Images", command=self.remove_all_images)
+        remove_all_button = ttk.Button(self.button_frame, text=self.texts[self.language]['remove_all_images'], command=self.remove_all_images)
         remove_all_button.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
 
-        add_images_button = ttk.Button(self.button_frame, text="Add Images", command=self.add_images)
+        add_images_button = ttk.Button(self.button_frame, text=self.texts[self.language]['add_images'], command=self.add_images)
         add_images_button.grid(row=0, column=1, padx=5, pady=5, sticky=tk.E)
 
-        add_folder_button = ttk.Button(self.button_frame, text="Add Folder", command=self.add_folder)
+        add_folder_button = ttk.Button(self.button_frame, text=self.texts[self.language]['add_folder'], command=self.add_folder)
         add_folder_button.grid(row=0, column=2, padx=5, pady=5, sticky=tk.E)
 
-        remove_button = ttk.Button(self.button_frame, text="Remove Metadata", command=self.remove_metadata_from_selected_images)
+        remove_button = ttk.Button(self.button_frame, text=self.texts[self.language]['remove_metadata'], command=self.remove_metadata_from_selected_images)
         remove_button.grid(row=0, column=3, padx=5, pady=5, sticky=tk.E)
 
         self.button_frame.grid_columnconfigure(0, weight=1)
@@ -174,11 +279,11 @@ class MetadataStripperApp:
                 row=row, column=1, padx=5, pady=5, sticky="nsew"
             )
             remove_button = ttk.Button(
-                self.scrollable_frame, text="Remove", command=lambda r=row, fp=file_path: self.remove_image(r, fp)
+                self.scrollable_frame, text=self.texts[self.language]['remove_metadata'], command=lambda r=row, fp=file_path: self.remove_image(r, fp)
             )
             remove_button.grid(row=row, column=2, padx=5, pady=5, sticky="nsew")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to process {file_path}: {e}")
+            messagebox.showerror(self.texts[self.language]['error'], f"Failed to process {file_path}: {e}")
 
     def remove_image(self, row, file_path):
         if file_path in self.file_paths:
@@ -187,7 +292,7 @@ class MetadataStripperApp:
 
     def remove_metadata_from_selected_images(self):
         if not self.file_paths:
-            messagebox.showerror("Error", "No images selected.")
+            messagebox.showerror(self.texts[self.language]['error'], self.texts[self.language]['no_images_selected'])
             return
 
         for file_path in self.file_paths:
@@ -195,54 +300,30 @@ class MetadataStripperApp:
                 temp_path = ImageProcessor.remove_metadata(file_path)  # Use ImageProcessor
                 ImageProcessor.save_image(temp_path, file_path)        # Use ImageProcessor
             except Exception as e:
-                messagebox.showerror("Error", f"Failed to process {file_path}: {e}")
+                messagebox.showerror(self.texts[self.language]['error'], f"Failed to process {file_path}: {e}")
                 return
 
-        messagebox.showinfo("Success", "Metadata removed from selected images.")
+        messagebox.showinfo(self.texts[self.language]['success'], self.texts[self.language]['metadata_removed'])
 
     def remove_all_images(self):
         if self.file_paths:
             self.file_paths.clear()
             self.refresh_metadata_display()
         else:
-            messagebox.showerror("Error", "No images to remove.")
+            messagebox.showerror(self.texts[self.language]['error'], self.texts[self.language]['no_images_to_remove'])
 
     def set_resolution(self, resolution):
         width, height = map(int, resolution.split('x'))
         self.root.geometry(f"{width}x{height}")
 
     def show_about(self):
-        about_text = (
-            "Metadata Stripper\n"
-            "Version 1.0\n\n"
-            "Developed by Pokkz.dev\n"
-            "Fullstack Web Developer\n"
-            "2024\n\n"
-            "For more information, visit:\n"
-            "https://pokkz.dev"
-        )
-        messagebox.showinfo("About Metadata Stripper", about_text)
+        messagebox.showinfo(self.texts[self.language]['about'], self.texts[self.language]['about_text'])
 
     def show_preferences(self):
-        preferences_text = (
-            "Preferences:\n\n"
-            "1. Default Save Location: Same as original image\n"
-            "2. Image Quality: High\n"
-            "3. Metadata Removal: Complete\n\n"
-            "These preferences can be customized in future versions."
-        )
-        messagebox.showinfo("Preferences", preferences_text)
+        messagebox.showinfo(self.texts[self.language]['preferences'], self.texts[self.language]['preferences_text'])
 
     def show_help(self):
-        help_text = (
-            "How to Use Metadata Stripper:\n\n"
-            "1. Click 'Add Images' to choose the images you want to process.\n"
-            "2. Review the metadata displayed in the table.\n"
-            "3. Click 'Remove Metadata' to strip metadata from the selected images.\n"
-            "4. The processed images will be saved in the same directory.\n\n"
-            "For more information, visit: https://pokkz.dev"
-        )
-        messagebox.showinfo("Help", help_text)
+        messagebox.showinfo(self.texts[self.language]['help'], self.texts[self.language]['help_text'])
 
     def close_app(self):
         self.root.quit()
